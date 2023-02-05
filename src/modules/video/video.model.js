@@ -6,7 +6,9 @@ module.exports = {
 
         const VideoSchema = new Schema({
             title: { type: String },
-            url: [Number]
+            description: { type: String },
+            published_at: { type: String },
+            thumbnails: { type: Object }
         });
 
         // Video Model 

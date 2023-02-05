@@ -1,14 +1,16 @@
 const { config } = require('../../../config');
 const axios = require('axios');
-const querystring = require('querystring')
+const querystring = require('querystring');
+const videoHelper = require('../video/video.helper');
 
 class youtubeHelper {
+    latestVideoTime = config.youtube.DEFAULT_PUBLISHED_AFTER
     /**
      * _fetchVideosYt fetch Latest videos from yt
      * @param  {String} latestVideoTime
      * @return {Object} yt object
      */
-    async _fetchVideosYt(latestVideoTime) {
+    async _fetchVideosYt() {
         try {
             const searchParams = {
                 part: config.youtube.PART,
@@ -16,7 +18,7 @@ class youtubeHelper {
                 q: config.youtube.SEARCH_QUERY,
                 type: config.youtube.TYPE,
                 order: config.youtube.ORDER,
-                publishedAfter: latestVideoTime || config.youtube.DEFAULT_PUBLISHED_AFTER,
+                publishedAfter: this.latestVideoTime,
                 maxResults: config.youtube.LIMIT,
             }
 
@@ -25,7 +27,6 @@ class youtubeHelper {
             console.log(url)
 
             const resp = await axios.get(url);
-            console.log(resp.data);
             return resp.data
         }
         catch (err) {
@@ -45,10 +46,20 @@ class youtubeHelper {
                 throw new Error("unable to find an api KEY please add one to fetch DATA")
             }
             const ytVideos = await this._fetchVideosYt()
-            console.log(ytVideos)
+            const docArr = []
             ytVideos["items"].forEach((video) => {
-                console.log(video["snippet"]["title"])
+                if(video["snippet"]["publishedAt"]>this.latestVideoTime){
+                    this.latestVideoTime = video["snippet"]["publishedAt"]
+                }
+                docArr.push({  
+                    title:  video["snippet"]["title"],
+                    description:  video["snippet"]["description"],
+                    published_at:  video["snippet"]["publishedAt"],
+                    thumbnails:  video["snippet"]["thumbnails"]["default"]                   
+                })       
             });
+            console.log(docArr)
+            await videoHelper.populateVideos(docArr)
             
         }
         catch (err) {
@@ -56,6 +67,9 @@ class youtubeHelper {
         }
     }
 
+    async init() {
+        this.latestVideoTime = await videoHelper.getLatestpublishedAt()
+    }
 
 
 

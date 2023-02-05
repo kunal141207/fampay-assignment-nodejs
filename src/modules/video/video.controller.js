@@ -21,14 +21,15 @@ class videoHandler {
             data: {},
         };
         try {
-            const videoData = await videoHelper.getVideos();
+            const {text, limit, skip} = require('url').parse(req.url,true).query;
+            const videoData = await videoHelper.getVideos(text, limit, skip);
             out.statusCode = videoData.statusCode || 200;
             out.data = videoData;
             res.status(out.statusCode).json(out);
         } catch (err) {
             console.log('error in getLatest', err);
             error.statusCode = err.statusCode || 500;
-            error.message = err.message || appData.MessageDatabaseError;
+            error.message = err.message || "DatabaseError";
             res.status(error.statusCode).json(error);
         }
     }
