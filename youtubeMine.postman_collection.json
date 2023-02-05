@@ -1,0 +1,70 @@
+{
+	"info": {
+		"_postman_id": "3e119527-1f2e-41f9-bf2c-9ff47fd98ef3",
+		"name": "youtubeMine",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get latest videos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/video/latest?text=sample text&limit=10&skip=2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"video",
+						"latest"
+					],
+					"query": [
+						{
+							"key": "text",
+							"value": "sample text"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						},
+						{
+							"key": "skip",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add Api Key",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/apikey?key=<API KEY>",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"apikey"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "<API KEY>"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
