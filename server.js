@@ -9,9 +9,6 @@ app.listen(3000, () => {
 const database = require('./db')
 database.init()
 
-const videoModel = require('./src/modules/video/video.model');
-videoModel.init()
+const modules = require('./src/index')
 
-const videoController = require('./src/modules/video/video.controller');
-
-videoController.init(app)
+modules.init(app)
