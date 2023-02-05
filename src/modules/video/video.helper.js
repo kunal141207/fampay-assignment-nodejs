@@ -2,8 +2,10 @@ const videoModel = require("./video.model").model;
 
 class videoHelper {
     /**
-     * getLogObject Get log object
-     * @param  {String} vehicleNumbe
+     * getLogObject Get video object
+     * @param  {String} videoTitle
+     * @param  {Number} limit
+     * @param  {Number} skip
      * @return {Object} log object
      */
     async getVideos(videoTitle = "", limit = 10, skip = 0) {
