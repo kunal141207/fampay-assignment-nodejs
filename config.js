@@ -2,7 +2,6 @@ const config = {
     MONGODB_SERVER: "<MongoUrl>",
     youtube: {
         URL: "https://www.googleapis.com/youtube/v3/search",
-        KEY: undefined,
         SEARCH_QUERY: "India",
         PART: "snippet",
         TYPE: "video",

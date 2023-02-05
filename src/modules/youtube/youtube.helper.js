@@ -2,6 +2,7 @@ const { config } = require('../../../config');
 const axios = require('axios');
 const querystring = require('querystring');
 const videoHelper = require('../video/video.helper');
+const apiKeyHelper = require('../apiKey/apiKey.helper');
 
 class youtubeHelper {
     latestVideoTime = config.youtube.DEFAULT_PUBLISHED_AFTER
@@ -14,7 +15,7 @@ class youtubeHelper {
         try {
             const searchParams = {
                 part: config.youtube.PART,
-                key: config.youtube.KEY,
+                key: apiKeyHelper.apiKey,
                 q: config.youtube.SEARCH_QUERY,
                 type: config.youtube.TYPE,
                 order: config.youtube.ORDER,
@@ -30,7 +31,7 @@ class youtubeHelper {
             return resp.data
         }
         catch (err) {
-            console.log('error in _fetchVideosYt',err)
+            console.log('error in _fetchVideosYt', err)
             throw err
         }
     }
@@ -42,25 +43,25 @@ class youtubeHelper {
     async startMining() {
         try {
             console.log('start mining yt videos')
-            if(!config.youtube.KEY){
+            if (!apiKeyHelper.apiKey) {
                 throw new Error("unable to find an api KEY please add one to fetch DATA")
             }
             const ytVideos = await this._fetchVideosYt()
             const docArr = []
             ytVideos["items"].forEach((video) => {
-                if(video["snippet"]["publishedAt"]>this.latestVideoTime){
+                if (video["snippet"]["publishedAt"] > this.latestVideoTime) {
                     this.latestVideoTime = video["snippet"]["publishedAt"]
                 }
-                docArr.push({  
-                    title:  video["snippet"]["title"],
-                    description:  video["snippet"]["description"],
-                    published_at:  video["snippet"]["publishedAt"],
-                    thumbnails:  video["snippet"]["thumbnails"]["default"]                   
-                })       
+                docArr.push({
+                    title: video["snippet"]["title"],
+                    description: video["snippet"]["description"],
+                    published_at: video["snippet"]["publishedAt"],
+                    thumbnails: video["snippet"]["thumbnails"]["default"]
+                })
             });
             console.log(docArr)
             await videoHelper.populateVideos(docArr)
-            
+
         }
         catch (err) {
             console.log('error in startMining', err)
