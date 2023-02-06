@@ -9,17 +9,20 @@ class videoHelper {
      * @return {Object} log object
      */
     async getVideos(videoTitle = "", limit = 10, skip = 0) {
-        try{
-            const sSearch = videoTitle.replace(" ", ")(?=.*");
+        try {
+            const search = " ";
+            const replacer = new RegExp(search, 'g')
+            const sSearch = videoTitle.replace(replacer, ")(?=.*");
             const regex = new RegExp(`^(?=.*` + sSearch + ").*$");
+            console.log("regex", regex)
             return await videoModel.find({
                 $or: [
-                    { 'data.title': regex },
-                    { 'data.decription': regex },
+                    { 'title': { $regex: regex } },
+                    { 'decription': { $regex: regex } },
                 ]
             }).sort({ "published_at": -1 }).skip(skip).limit(limit).exec() || []
         }
-        catch(err){
+        catch (err) {
             console.log('err in getVideos', err)
             throw err
         }
